@@ -57,7 +57,7 @@ lb_dt = 0.001;
 ub_dt = 1.0;
 
 lbw = [lb_u; lb_dt];
-ubw = [ub_u; lb_dt];
+ubw = [ub_u; ub_dt];
 
 %NLP solver
 nlp = struct('x',w,'f',L,'g',g_expr);
@@ -70,7 +70,7 @@ U_opt = w_opt(1:N);
 DT_opt = w_opt(end);
 T_f_opt = N * DT_opt;
 
-FX = Function('FX',{U},{X});
+FX = Function('FX',{U,DT},{X});
 X_opt = [x0bar, full(FX(U_opt,DT_opt))];
 
 time_steps = 0:DT_opt:T_f_opt;
@@ -81,6 +81,7 @@ figure(1); clf;
 subplot(2,2,1); hold on;
 plot(X_opt(1,:),X_opt(2,:), '-o', 'LineWidth',1.5);
 plot(x0bar(1),x0bar(2),'ro','MarkerFaceColor', 'r', 'MarkerSize',8);
+plot(xf_target(1),xf_target(2),'go','MarkerFaceColor', 'g','MarkerSize',8);
 grid on; axis equal;
 xlabel('Position x');ylabel('Position y');
 title('Profile');
@@ -103,10 +104,3 @@ grid on;
 xlabel('time(s)');
 ylabel('Control u(t)');
 title('Control Trajectories');
-
-
-
-
-
-
-

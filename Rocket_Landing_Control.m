@@ -67,7 +67,7 @@ plot(time_steps, X_opt(1,:), '-o', 'LineWidth', 1.5);
 plot(time_steps, X_opt(2,:), '--s', 'LineWidth', 1.5);
 grid on; ylabel('Rocket States');
 title('Nonlinear Rocket Landing Trajectory');
-legend('Position','velocity');
+legend({'Position','velocity'});
 
 subplot(2,1,2); hold on;
 stairs(time_steps, [U_opt;nan], 'r','LineWidth',1.5)

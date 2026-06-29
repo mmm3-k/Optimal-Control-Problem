@@ -4,17 +4,17 @@ import casadi.*;
 %Parameters
 nx = 2;
 nu = 1;
-N  = 50;
+N  = 150;
 
 %Initial Conditions
 x0bar = [-0.5; 0];
 
 %Dynamics
-dynamics = @(x,u) [x(2); 0.00 * u - 0.0025 * cos(3*x(1))];
+dynamics = @(x,u) [x(2); 0.001 * u - 0.0025 * cos(3*x(1))];
 
 x = MX.sym('x',nx, 1);
 u = MX.sym('u',nu, 1);
-DT = MX.sym('dt');
+DT = MX.sym('DT');
 
 %RK4
 k1 = dynamics(x,u);
@@ -47,7 +47,7 @@ ub_control = u_max * ones(N,1);
 
 %Step size Constraints
 lb_dt = 0.001;
-up_dt = 1.0;
+ub_dt = 1.0;
 
 lbw = [lb_control;lb_dt];
 ubw = [ub_control;ub_dt];
@@ -56,7 +56,7 @@ ubw = [ub_control;ub_dt];
 %NLP solver
 nlp = struct('x',w,'f',L,'g',g_expr);
 solver = nlpsol('solver','ipopt',nlp);
-sol = solver('x0',u0,'lbx',lbw,'ubx',ubw,'lbg',[0.5;0],'ubg',[0.5;inf]);
+sol = solver('x0',w0,'lbx',lbw,'ubx',ubw,'lbg',[0.5;0],'ubg',[0.5;inf]);
 w_opt = full(sol.x);
 
 %% Extract Trajectories
@@ -77,7 +77,7 @@ plot(time_steps,X_opt(1,:),'-o', 'LineWidth', 1.5)
 plot(time_steps,X_opt(2,:),'--s','LineWidth', 1.5)
 grid on;
 title(sprintf('State Trajectory (Total Time: %.2fs)',T_f_opt));
-legend({'Position',Velocity'});
+legend({'Position','Velocity'});
 ylabel('States');
 
 subplot(2,1,2); hold on;

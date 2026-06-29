@@ -56,14 +56,21 @@ U_opt = full(sol.x);
 
 %Extract Trajectories
 FX = Function('FX',{U},{X});
-X_opt = [x0bar; full(FX(U_opt))];
+X_opt = [x0bar, full(FX(U_opt))];
 
 time_steps = 0:DT:T_f;
 
 %Post processing
 figure(1); clf;
 subplot(2,1,1); hold on;
+plot(time_steps, X_opt(1,:), '-o', 'LineWidth', 1.5);
+plot(time_steps, X_opt(2,:), '--s', 'LineWidth', 1.5);
+grid on; ylabel('Rocket States');
+title('Nonlinear Rocket Landing Trajectory');
+legend('Position','velocity');
+
+subplot(2,1,2); hold on;
 stairs(time_steps, [U_opt;nan], 'r','LineWidth',1.5)
-grid on; ylabel('Thrust Force [N]); xlabel('Time [seconds]');
+grid on; ylabel('Thrust Force [N]'); xlabel('Time [seconds]');
 title('Rocket Landing control');
 legend('Engine Thrust u(t)');

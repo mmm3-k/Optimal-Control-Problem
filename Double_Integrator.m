@@ -1,6 +1,9 @@
 close all; clear; clc;
 import casadi.*;
 
+%%Model info
+%Unconstrained Double Integrator with objective is position and velocity should be zero at time t_f
+
 %Parameters
 nx = 2;
 nu = 1;
@@ -9,7 +12,7 @@ T_f = 1.5;
 DT = T_f / N;
 
 %Initial Conditions
-x0bar = [1; 0];
+x0bar = [1; 1];
 
 %Dynamics
 dynamics = @(x,u) [x(2); u];
@@ -39,14 +42,10 @@ L = 0.5 * sum(U.^2) * DT;
 %Terminal Constraints
 g_expr = X(:,end);
 
-%Control Constraints
-lbx = -1 * ones(N,1);
-ubx = 1 * ones(N,1);
-
 %NLP Solver
 nlp = struct('x',U,'f',L,'g',g_expr);
 solver = nlpsol('solver','ipopt',nlp);
-sol = solver('x0',U0,'lbx',lbx,'ubx',ubx,'lbg',[0;0],'ubg',[0;0]);
+sol = solver('x0',U0,'lbg',[0;0],'ubg',[0;0]);
 U_opt = full(sol.x);
 
 %Extract Trajectory
@@ -62,7 +61,7 @@ plot(time_steps,X_opt(1,:),'-o', 'LineWidth', 1.5)
 plot(time_steps,X_opt(2,:),'--s', 'LineWidth', 1.5)
 grid on;
 title('State Trajectories');
-legend('Position','velocity');
+legend({'Position','velocity'});
 ylabel('state');
 
 subplot(2,1,2); hold on;

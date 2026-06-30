@@ -22,14 +22,15 @@ dynamics = @(x,u) [...
 	((m1 +m2)*g*sin(x(2)) + cos(x(2))*(u + m1*l*(x(4)^2)*sin(x(2))))/ (m2*l*cos(x(2))^2 - (m1 + m2)*l)...
 ];
 
-%% Heun's Method/ RK2 Implicit
-h = DT;
+%% RK4
 x = MX.sym('x',nx,1);
 u = MX.sym('u',nu,1);
 
 k1 = dynamics(x,u);
-k2 = dynamics(x + h*k1, u);
-x_next =  x + (h/2)* (k1 +k2);
+k2 = dynamics(x + (DT/2)*k1, u);
+k3 = dynamics(x + (DT/2)*k2, u);
+k4 = dynamics(x + (DT*k3), u);
+x_next = x + (DT/6)*(k1 + 2*k2 + 2*k3 + k4);
 
 %% Symbolic blueprint
 F = Function('F',{x,u},{x_next});

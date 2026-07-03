@@ -12,7 +12,10 @@ DT = T / N;
 x0bar = [1; 1];
 
 %Dynamics
-dynamics = @(x,u) [(1 - x(2)^2 * x(1) - x(2) + u; x(1)];
+dynamics = @(x,u) [...
+			(1 - x(2)^2 * x(1) - x(2)+u;...
+			x(1)...
+];
 
 %Implicit RADAU IIA (2stage, 3rd Order) via rootfinder
 x_k = MX.sym('x_k',nx,1);
@@ -26,7 +29,7 @@ f_s1 = dynamics(x_s1,u_k);
 f_s2 = dynamics(x_s2,u_k);
 
 res_s1 = x_s1 - (x_k + DT * ((5/12)*f_s1 - (1/12)*f_s2));
-res_s2 = x_s2 - (x_k + DT * ((3/4) *f_s1 - (1/4)* f_s2));
+res_s2 = x_s2 - (x_k + DT * ((3/4) *f_s1 + (1/4)* f_s2));
 
 res_combine = [res_s1; res_s2];
 x_unknows  = [x_s1;x_s2];
@@ -95,7 +98,7 @@ FX = Function('FX',{reshape(U, N*nu,1)},{X});
 X_opt = full(FX(U_opt));
 t_grid = 0:DT:T;
 
-X_fine_interp = interpl(t_fine,X_fine,t_grid)';
+X_fine_interp = interp1(t_fine,X_fine,t_grid)';
 
 %Abs Error
 abs_error_x0 = abs(X_opt(1,:) - X_fine_interp(1,:));
@@ -132,6 +135,3 @@ plot(t_grid,rel_error_x0,'r-', 'LineWidth',1.5);
 plot(t_grid,rel_error_x1, 'b-', 'LineWidth',1.5);
 grid on;
 title('Relative Error');
-
-
-

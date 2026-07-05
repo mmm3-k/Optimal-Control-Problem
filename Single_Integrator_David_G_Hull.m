@@ -59,6 +59,7 @@ title('State Trajectory');
 legend({'Position'});
 ylabel('states');
 
+subplot(2,1,2); hold on;
 plot(time_steps,[U_opt;nan],'-r','LineWidth',2);
 grid on;
 title('Control Trajectory');

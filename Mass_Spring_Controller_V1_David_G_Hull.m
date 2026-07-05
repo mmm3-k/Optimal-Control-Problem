@@ -14,7 +14,7 @@ k = 2000;
 a = k/m;
 
 %Initial Parameters
-x0bar = 1;
+x0bar = 0.1;
 
 %Dynamics
 dynamics = @(x,u) [u];

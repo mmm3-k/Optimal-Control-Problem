@@ -9,7 +9,7 @@ tf = 1;
 DT = tf/N;
 
 %Initial Parameters
-x0 = 1;
+x0bar = 1;
 
 %Dynamics
 dynamics = @(x,u) [u];
@@ -52,15 +52,16 @@ time_steps = 0:DT:tf;
 
 %Plotting
 figure(1); clf;
-plot(time_steps,X_all(1,:),'-o','LineWidth',2);
+subplot(2,1,1); hold on;
+plot(time_steps,X_opt(1,:),'-o','LineWidth',2);
 grid on;
 title('State Trajectory');
-legend('Position');
+legend({'Position'});
 ylabel('states');
 
 plot(time_steps,[U_opt;nan],'-r','LineWidth',2);
 grid on;
 title('Control Trajectory');
 legend('Control');
-ylabel('Velocity');
+ylabel({'Velocity'});
 

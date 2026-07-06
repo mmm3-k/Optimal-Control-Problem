@@ -107,3 +107,39 @@ $$\min_{u} \quad J = 10 \cdot \left( \phi(t_f)^2 + \omega(t_f)^2 \right)$$
 #### 2. Path & Variable Constraints
 * **State / Control Constraints:** None (unconstrained optimization problem).
 
+  ## Problem 4: Nonlinear Rocket Landing (`Rocket_Landing.m`)
+
+### ⚙️ System Dynamics
+The system represents a 1D vertical rocket landing problem. The state vector is defined as $\mathbf{x} = [p, v]^T$, where $p$ is the altitude or vertical position (m) and $v$ is the vertical velocity (m/s). Controlled by the thrust force input $u$, the continuous-time system dynamics are subject to gravity and aerodynamic drag:
+
+$$\dot{p} = v$$
+$$\dot{v} = -g - c_d \cdot v |v| + u$$
+
+Where:
+* $g = 9.81 \text{ m/s}^2$ is the acceleration due to gravity.
+* $c_d = 0.1$ is the aerodynamic drag coefficient.
+
+The continuous dynamics are discretized over a fixed terminal time $T_f = 2.0 \text{ s}$ divided into $N = 100$ intervals ($\Delta t = 0.02 \text{ s}$) using a 4th-order Runge-Kutta (RK4) integration scheme.
+
+---
+
+### 🎯 Objective Function
+The objective is a stage cost that minimizes the total control/fuel energy consumption over the landing trajectory:
+
+$$\min_{u} \quad J = \sum_{i=1}^{N} u_i^2 \cdot \Delta t$$
+
+---
+
+### 🛑 Boundary Conditions & Constraints
+
+#### 1. Boundary Conditions
+* **Initial State:** The rocket begins its landing descent phase from an altitude of 15 meters with a downward velocity:
+  $$p(0) = 15, \quad v(0) = -5$$
+* **Terminal State (Pinpoint Soft Landing):** The rocket must reach zero altitude with zero velocity at the exact final time step $t_f$:
+  $$p(t_f) = 0, \quad v(t_f) = 0$$
+
+#### 2. Actuator Constraints (Box Constraints)
+* **Thrust Limits:** The engine cannot provide negative thrust (no reverse thrusters) and is capped at a maximum thrust of 25 N:
+  $$0 \leq u(t) \leq 25 \text{ N}$$
+
+

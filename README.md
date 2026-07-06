@@ -18,7 +18,7 @@ Where $g = 9.81 \text{ m/s}^2$ is the acceleration due to gravity. The continuou
 ### 🎯 Objective Function
 The objective is to minimize the total travel time ($t_f$) using a constant time step ($\Delta t$) over $N = 100$ intervals:
 
-$$\min_ \quad J = t_f = N \cdot \Delta t$$
+$$\min_{u, \Delta t} \quad J = t_f = N \cdot \Delta t$$
 
 ---
 
@@ -34,13 +34,44 @@ $$\min_ \quad J = t_f = N \cdot \Delta t$$
 The trajectory must stay below the linear boundary ($h = 0.1$) at all times:
 $$y(t) \leq \frac{1}{2}x(t) + 0.1$$
 
-
-
 #### 3. Variable Bounds (Box Constraints)
 * **Control Bounds:** The steering angle $u$ is restricted to a full circle sweep:
   $$-\pi \leq u(t) \leq \pi$$
 * **Time Step Bounds:** The decision variable $\Delta t$ is bounded for solver stability:
   $$0.001 \leq \Delta t \leq 1.0 \text{ seconds}$$
 
-  #### Problem 2: Brachistochrone with UnConstraints (`Brachistochrone_UC.m`)
-  This problem is taken from https://openmdao.github.io/dymos/examples/brachistochrone/brachistochrone.html
+---
+
+## Problem 2: Brachistochrone Unconstrained (`Brachistochrone_UC.m`)
+*Reference: [Dymos Brachistochrone Example](https://openmdao.github.io/dymos/examples/brachistochrone/brachistochrone.html)*
+
+### ⚙️ System Dynamics
+The unconstrained problem evaluates a bead falling down a frictionless wire profile. In this variation, the state vector remains $\mathbf{x} = [x, y, v]^T$, but the tracking configuration changes the vertical axis orientation downward ($y_0 = 10 \rightarrow y_f = 5$). The coordinate control uses the wire angle tangent ($\theta$):
+
+$$\frac{d x}{d t} = v \sin(\theta)$$
+$$\frac{d y}{d t} = -v \cos(\theta)$$
+$$\frac{d v}{d t} = g \cos(\theta)$$
+
+---
+
+### 🎯 Objective Function
+The objective is to find the continuous profile curve that minimizes final time ($t_f$):
+
+$$\min_{\theta} \quad J = t_f$$
+
+---
+
+### 🛑 Boundary Conditions & Constraints
+
+#### 1. Boundary Conditions
+* **Initial State:** The bead is released from rest at a high platform $A(0,10)$:
+  $$x(0) = 0, \quad y(0) = 10, \quad v(0) = 0$$
+* **Terminal State:** The target endpoint settles at platform $B(10,5)$, leaving terminal velocity free:
+  $$x(t_f) = 10, \quad y(t_f) = 5, \quad v(t_f) = \text{free}$$
+
+#### 2. Path Constraints
+* None (Unconstrained wire geometry).
+
+#### 3. Control Bounds
+* **Angle Limits:** The wire profile bounds the tangent slope to prevent vertical singularities:
+  $$0.01^\circ \leq \theta(t) \leq 179.9^\circ$$

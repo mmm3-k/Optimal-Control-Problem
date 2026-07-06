@@ -77,3 +77,33 @@ $$\min_{\theta} \quad J = t_f$$
   $$-\pi \leq u(t) \leq \pi$$
 * **Time Step Bounds:** The decision variable $\Delta t$ is bounded for solver stability:
   $$0.001 \leq \Delta t \leq 1.0 \text{ seconds}$$
+
+  ## Problem 3: Nonlinear Pendulum Regulator (`Pendulum_Regulator.m`)
+
+### ⚙️ System Dynamics
+The system represents a single-degree-of-freedom (1DOF) nonlinear pendulum with a single torque controller at the joint. The state vector is defined as $\mathbf{x} = [\phi, \omega]^T$, where $\phi$ is the angular position (rad) and $\omega$ is the angular velocity (rad/s). Controlled by the input torque $u$, the continuous-time dynamics are:
+
+$$\dot{\phi} = \omega$$
+$$\dot{\omega} = -\sin(\phi) + u$$
+
+The continuous system is discretized over a fixed time step $\Delta t = 0.1 \text{ s}$ over a horizon of $N = 50$ intervals using a 4th-order Runge-Kutta (RK4) integration scheme.
+
+---
+
+### 🎯 Objective Function
+The objective is a terminal cost regularizer designed to penalize deviations of the final state from the origin (bringing the pendulum to rest at the vertical-down equilibrium position):
+
+$$\min_{u} \quad J = 10 \cdot \left( \phi(t_f)^2 + \omega(t_f)^2 \right)$$
+
+---
+
+### 🛑 Boundary Conditions & Constraints
+
+#### 1. Boundary Conditions
+* **Initial State:** The pendulum starts in the completely inverted vertical-up position at rest:
+  $$\phi(0) = \pi, \quad \omega(0) = 0$$
+* **Terminal State:** The final states are unconstrained but heavily penalized in the cost function.
+
+#### 2. Path & Variable Constraints
+* **State / Control Constraints:** None (unconstrained optimization problem).
+

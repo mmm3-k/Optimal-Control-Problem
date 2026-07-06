@@ -4,6 +4,17 @@
 
 ## Problem 1: Brachistochrone with Path Constraints (`Brachistochrone_PC.m`)
 
+### ⚙️ System Dynamics
+The system state vector is defined as $\mathbf{x} = [x, y, v]^T$, representing horizontal position ($x$), vertical position ($y$), and velocity ($v$). Controlled by the steering angle $u$, the continuous-time system dynamics are governed by:
+
+$$\dot{x} = v \cos(u)$$
+$$\dot{y} = v \sin(u)$$
+$$\dot{v} = g \sin(u)$$
+
+Where $g = 9.81 \text{ m/s}^2$ is the acceleration due to gravity. The continuous dynamics are discretized over each time step $\Delta t$ using a 4th-order Runge-Kutta (RK4) integration scheme.
+
+---
+
 ### 🎯 Objective Function
 The objective is to minimize the total travel time ($t_f$) using a constant time step ($\Delta t$) over $N = 100$ intervals:
 
@@ -28,4 +39,3 @@ $$y(t) \leq \frac{1}{2}x(t) + 0.1$$
   $$-\pi \leq u(t) \leq \pi$$
 * **Time Step Bounds:** The decision variable $\Delta t$ is bounded for solver stability:
   $$0.001 \leq \Delta t \leq 1.0 \text{ seconds}$$
-

@@ -1,3 +1,5 @@
 # Optimal-Control-Problem
 Learning Basics of OCP
-<img width="1060" height="602" alt="image" src="https://github.com/user-attachments/assets/7384de84-518e-4ae2-bf85-0819fb83cd32" />
+
+Problem:1 Brachistochrone_PC.m 
+Objective FunctionThe objective is to minimize the total travel time (\(t_{f}\)) using a constant time step (\(\Delta t\)) over \(N = 100\) intervals:\(\min _{u,\Delta t}\quad J=t_{f}=N\cdot \Delta t\)

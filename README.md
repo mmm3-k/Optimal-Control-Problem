@@ -73,5 +73,7 @@ $$\min_{\theta} \quad J = t_f$$
 * None (Unconstrained wire geometry).
 
 #### 3. Control Bounds
-* **Angle Limits:** The wire profile bounds the tangent slope to prevent vertical singularities:
-  $$0.01^\circ \leq \theta(t) \leq 179.9^\circ$$
+* **Control Bounds:** The steering angle $u$ is restricted to a full circle sweep:
+  $$-\pi \leq u(t) \leq \pi$$
+* **Time Step Bounds:** The decision variable $\Delta t$ is bounded for solver stability:
+  $$0.001 \leq \Delta t \leq 1.0 \text{ seconds}$$

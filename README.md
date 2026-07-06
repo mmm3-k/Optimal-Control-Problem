@@ -42,5 +42,5 @@ $$y(t) \leq \frac{1}{2}x(t) + 0.1$$
 * **Time Step Bounds:** The decision variable $\Delta t$ is bounded for solver stability:
   $$0.001 \leq \Delta t \leq 1.0 \text{ seconds}$$
 
-  ## Problem 2: Brachistochrone with UnConstraints (`Brachistochrone_UC.m`)
+  #### Problem 2: Brachistochrone with UnConstraints (`Brachistochrone_UC.m`)
   This problem is taken from https://openmdao.github.io/dymos/examples/brachistochrone/brachistochrone.html

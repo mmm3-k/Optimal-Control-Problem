@@ -355,6 +355,36 @@ $$\min_{u, \Delta t} \quad J = t_f = N \cdot \Delta t$$
 * **Time Step Bounds:** The grid delta variable $\Delta t$ is bounded to maintain integration fidelity:
   $$0.001 \leq \Delta t \leq 1.0 \text{ seconds}$$
 
+  ## Problem 11: State-Control Tracking Regularization (`State_Tracking_Hull.m`)
+*Reference: This problem is taken from "Optimal Control Theory for Applications" by David G. Hull.*
+
+### ⚙️ System Dynamics
+The system model uses a single-degree-of-freedom scalar dynamic environment operating under direct velocity control. The state vector is scalar, $\mathbf{x} = [x]$, representing the system's position metric. Controlled directly by the linear velocity input $u$ ($\text{m/s}$), the continuous-time kinematic dynamics are governed by:
+
+$$\dot{x} = u$$
+
+The continuous system is discretized over a fixed terminal landing horizon $t_f = 1.0 \text{ s}$ divided into $N = 50$ intervals ($\Delta t = 0.02 \text{ s}$) using a 4th-order Runge-Kutta (RK4) integration scheme.
+
+---
+
+### 🎯 Objective Function
+The objective function tracks a squared difference penalty index across the trajectory. It minimizes the cumulative quadratic deviation between the state position and the velocity input effort at each grid node:
+
+$$\min_{u} \quad J = \sum_{i=1}^{N} \left( u_i - x_i \right)^2 \cdot \Delta t$$
+
+---
+
+### 🛑 Boundary Conditions & Constraints
+
+#### 1. Boundary Conditions
+* **Initial State:** The tracking system begins with a positive unit displacement offset from the origin:
+  $$x(0) = 1$$
+* **Terminal State:** The final state $x(t_f)$ is left unconstrained (completely free at the terminal boundary).
+
+#### 2. Path & Variable Constraints
+* **State / Control Constraints:** None (unconstrained optimization problem with infinite actuator authority).
+
+
 
 
 

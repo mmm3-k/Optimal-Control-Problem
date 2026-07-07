@@ -422,6 +422,34 @@ $$\min_{u} \quad J = \sum_{i=1}^{N} \left( x_{1,i}^2 + x_{2,i}^2 + u_i^2 \right)
 * **Control Input Limits:** The force command is bounded asymmetrically, restricting maximum directional thrust capabilities:
   $$-0.75 \leq u(t) \leq 1.0$$
 
+## Problem 13: Single Integrator State-Control Tracking (`Single_Integrator_David_G_Hull.m`)
+*Reference: This problem is taken from "Optimal Control Theory for Applications" by David G. Hull.*
+
+### ⚙️ System Dynamics
+The system represents a basic unconstrained linear Single Integrator operating under direct velocity control. The state vector is scalar, $\mathbf{x} = [x]$, tracking a single position variable. Controlled directly by the velocity input $u$ ($\text{m/s}$), the continuous-time kinematic relationship is defined as:
+
+$$\dot{x} = u$$
+
+The continuous kinematic system is discretized over a fixed execution horizon $t_f = 1.0 \text{ s}$ split into $N = 50$ intervals ($\Delta t = 0.02 \text{ s}$) using a 4th-order Runge-Kutta (RK4) numerical integration scheme.
+
+---
+
+### 🎯 Objective Function
+The objective function tracks a quadratic regularization index across the grid. It balances the relationship between the vehicle state and its driving actuator input by minimizing the integrated squared difference between position and velocity:
+
+$$\min_{u} \quad J = \sum_{i=1}^{N} \left( u_i - x_i \right)^2 \cdot \Delta t$$
+
+---
+
+### 🛑 Boundary Conditions & Constraints
+
+#### 1. Boundary Conditions
+* **Initial State:** The tracking system begins with a clear positive displacement offset from its target center line:
+  $$x(0) = 1$$
+* **Terminal State:** The final boundary node state $x(t_f)$ is left entirely unconstrained (completely free).
+
+#### 2. Path & Variable Constraints
+* **State / Control Constraints:** None (unconstrained optimization formulation allowing infinite actuator authority).
 
 
 

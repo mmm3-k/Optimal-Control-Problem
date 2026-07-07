@@ -319,6 +319,43 @@ Where the system frequency parameter $\alpha$ is defined by structural constants
 * **Velocity Limits:** The system control input is bounded symmetrically to represent strict speed limits on the joint runner:
   $$-15 \leq u(t) \leq 15 \text{ m/s}$$
 
+  ## Problem 10: Minimum-Time Mountain Car Escape (`Mountain_Car.m`)
+*Reference: This problem is taken from the [Dymos Mountain Car Example](https://openmdao.github.io/dymos/examples/mountain_car/mountain_car.html), which evaluates a classic reinforcement learning benchmark within an optimal control framework.*
+
+### ⚙️ System Dynamics
+The system simulates an underpowered car trapped inside a deep valley or "well." The vehicle lacks the engine power to directly accelerate uphill out of the basin and must rock back and forth repeatedly to build up enough kinetic energy to escape. 
+
+The state vector is defined as $\mathbf{x} = [x, v]^T$, representing the car's horizontal position ($x$) and vertical velocity ($v$). Controlled by a bounded throttle/force input $u$, the continuous-time nonlinear system dynamics are governed by:
+
+$$\dot{x} = v$$
+$$\dot{v} = 0.001 u - 0.0025 \cos(3x)$$
+
+The continuous equations of motion are discretized over a free terminal horizon $t_f = N \cdot \Delta t$ split into $N = 150$ intervals using a 4th-order Runge-Kutta (RK4) integration scheme, where the time step $\Delta t$ is structured as an optimization decision variable.
+
+---
+
+### 🎯 Objective Function
+The objective is to minimize the total time $t_f$ required for the vehicle to successfully climb up and escape out of the positive side of the valley grid:
+
+$$\min_{u, \Delta t} \quad J = t_f = N \cdot \Delta t$$
+
+---
+
+### 🛑 Boundary Conditions & Constraints
+
+#### 1. Boundary Conditions
+* **Initial State:** The car begins fully at rest from a stationary position low inside the western ridge:
+  $$x(0) = -0.5, \quad v(0) = 0$$
+* **Terminal State:** The problem terminates successfully when the vehicle breaches the target hill crest ($x_f = 0.5$) with a non-negative outward velocity:
+  $$x(t_f) = 0.5, \quad v(t_f) \geq 0$$
+
+#### 2. Variable Bounds (Box Constraints)
+* **Actuator/Control Bounds:** The engine throttle effort is restricted to a normalized maximum authority profile, generating a strong bang-bang control response:
+  $$-1.0 \leq u(t) \leq 1.0$$
+* **Time Step Bounds:** The grid delta variable $\Delta t$ is bounded to maintain integration fidelity:
+  $$0.001 \leq \Delta t \leq 1.0 \text{ seconds}$$
+
+
 
 
 

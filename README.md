@@ -283,6 +283,43 @@ $$\min_{u, \Delta t} \quad J = t_f = N \cdot \Delta t$$
 * **Time Step Bounds:** The grid size $\Delta t$ is bounded to maintain numerical integration stability:
   $$0.001 \leq \Delta t \leq 1.0 \text{ seconds}$$
 
+  ## Problem 9: Mass-Spring System Energy Optimization (`Mass_Spring_Hull.m`)
+*Reference: This problem is taken from "Optimal Control Theory for Applications" by David G. Hull.*
+
+### ⚙️ System Dynamics
+The system represents a structural mass-spring arrangement operating under direct velocity control. The state vector is scalar, $\mathbf{x} = [x]$, representing the physical position of the mass (m). Controlled directly by the velocity input $u$ ($\text{m/s}$), the continuous-time dynamics are governed by:
+
+$$\dot{x} = u$$
+
+The continuous system is discretized over a fixed terminal horizon $t_f = 1.0 \text{ s}$ split into $N = 50$ intervals ($\Delta t = 0.02 \text{ s}$) using a 4th-order Runge-Kutta (RK4) integration scheme. 
+
+---
+
+### 🎯 Objective Function
+The objective function maps an energy-balancing index across the transition horizon. It minimises the difference between the squared velocity (resembling a scaled kinetic energy) and a high-frequency position penalty parameter (resembling a structural spring potential energy):
+
+$$\min_{u} \quad J = \sum_{i=1}^{N} \left( u_i^2 - \alpha^2 x_i^2 \right) \cdot \Delta t$$
+
+Where the system frequency parameter $\alpha$ is defined by structural constants:
+* $m = 5 \text{ kg}$ (Mass)
+* $k = 2000 \text{ N/m}$ (Spring stiffness coefficient)
+* $\alpha = \frac{k}{m} = 400$
+
+---
+
+### 🛑 Boundary Conditions & Constraints
+
+#### 1. Boundary Conditions
+* **Initial State:** The mass begins with an initial displacement offset from the structural rest position:
+  $$x(0) = 0.1 \text{ m}$$
+* **Terminal State (Return to Origin):** The system must perfectly return to the structural origin at the final horizon timestamp $t_f$:
+  $$x(t_f) = 0$$
+
+#### 2. Actuator Constraints (Box Constraints)
+* **Velocity Limits:** The system control input is bounded symmetrically to represent strict speed limits on the joint runner:
+  $$-15 \leq u(t) \leq 15 \text{ m/s}$$
+
+
 
 
 

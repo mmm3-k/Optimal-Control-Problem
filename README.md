@@ -247,6 +247,43 @@ $$\min_{u} \quad J = -p(t_f)$$
 * **Acceleration Limits:** The control input is symmetrically bounded to represent physical actuator saturation limits, driving a classic bang-bang control profile:
   $$-1.0 \leq u(t) \leq 1.0 \text{ m/s}^2$$
 
+  ## Problem 8: Minimum-Time 2D Particle Steering (`Particle_Steering.m`)
+*Reference: This problem is taken from "Practical Methods for Optimal Control and Estimation Using Nonlinear Programming" by John T. Betts.*
+
+### ⚙️ System Dynamics
+The system describes a 2D point mass or particle moving under a constant acceleration magnitude $a$, where the control variable $u$ dictates the steering direction/angle of the acceleration vector. The state vector is defined as $\mathbf{x} = [x, y, v_x, v_y]^T$, representing horizontal position ($x$), vertical position ($y$), horizontal velocity ($v_x$), and vertical velocity ($v_y$). The continuous-time system dynamics are:
+
+$$\dot{x} = v_x$$
+$$\dot{y} = v_y$$
+$$\dot{v}_x = a \cos(u)$$
+$$\dot{v}_y = a \sin(u)$$
+
+Where $a = 100 \text{ m/s}^2$ is the constant acceleration magnitude. The continuous dynamics are discretized over a free terminal horizon $t_f = N \cdot \Delta t$ split into $N = 100$ intervals, using a 4th-order Runge-Kutta (RK4) integration scheme where the time step $\Delta t$ is a decision variable.
+
+---
+
+### 🎯 Objective Function
+The objective is to minimize the total travel time ($t_f$) required to satisfy the terminal conditions:
+
+$$\min_{u, \Delta t} \quad J = t_f = N \cdot \Delta t$$
+
+---
+
+### 🛑 Boundary Conditions & Constraints
+
+#### 1. Boundary Conditions
+* **Initial State:** The particle starts fully at rest from the origin:
+  $$x(0) = 0, \quad y(0) = 0, \quad v_x(0) = 0, \quad v_y(0) = 0$$
+* **Terminal State:** The particle must reach a specific vertical position and velocity vector at the final time $t_f$, while the final horizontal position $x(t_f)$ is left entirely free:
+  $$x(t_f) = \text{free}, \quad y(t_f) = 5, \quad v_x(t_f) = 45, \quad v_y(t_f) = 0$$
+
+#### 2. Variable Bounds (Box Constraints)
+* **Control Bounds:** The steering angle $u$ is completely unconstrained:
+  $$-\infty \leq u(t) \leq \infty \text{ rad}$$
+* **Time Step Bounds:** The grid size $\Delta t$ is bounded to maintain numerical integration stability:
+  $$0.001 \leq \Delta t \leq 1.0 \text{ seconds}$$
+
+
 
 
 

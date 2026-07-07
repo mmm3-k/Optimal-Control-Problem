@@ -384,6 +384,44 @@ $$\min_{u} \quad J = \sum_{i=1}^{N} \left( u_i - x_i \right)^2 \cdot \Delta t$$
 #### 2. Path & Variable Constraints
 * **State / Control Constraints:** None (unconstrained optimization problem with infinite actuator authority).
 
+## Problem 12: Van der Pol Oscillator Stabilization (`VanderPol_Radau.m`)
+*Reference: This problem is a classic nonlinear tracking benchmark evaluating the control of an unstable limit cycle oscillator, commonly featured in optimal control suites like Dymos.*
+
+### ⚙️ System Dynamics
+The system represents a controlled Van der Pol oscillator. The state vector is defined as $\mathbf{x} = [x_1, x_2]^T$, where $x_1$ represents the first derivative or velocity state and $x_2$ defines the primary position coordinate. Controlled by a scalar forcing input $u$, the non-conservative continuous-time dynamics are governed by:
+
+$$\dot{x}_1 = (1 - x_2^2)x_1 - x_2 + u$$
+$$\dot{x}_2 = x_1$$
+
+#### 🧩 Collocation & Numerical Integration
+Unlike traditional explicit Runge-Kutta formulations, this problem implements a fully implicit **2-stage, 3rd-order Radau IIA collocation method**. At each discretization step, the intermediate stage states ($\mathbf{x}_{s1}, \mathbf{x}_{s2}$) are solved simultaneously via an algebraic Newton-Raphson rootfinder (`casadi.rootfinder`) enforcing:
+
+$$\mathbf{r}_1 = \mathbf{x}_{s1} - \left(\mathbf{x}_k + \Delta t \left[\frac{5}{12}\mathbf{f}(\mathbf{x}_{s1}, u_k) - \frac{1}{12}\mathbf{f}(\mathbf{x}_{s2}, u_k)\right]\right) = \mathbf{0}$$
+$$\mathbf{r}_2 = \mathbf{x}_{s2} - \left(\mathbf{x}_k + \Delta t \left[\frac{3}{4}\mathbf{f}(\mathbf{x}_{s1}, u_k) + \frac{1}{4}\mathbf{f}(\mathbf{x}_{s2}, u_k)\right]\right) = \mathbf{0}$$
+
+The system is evaluated over a fixed terminal time $T = 10.0 \text{ s}$ split into $N = 100$ segments ($\Delta t = 0.1 \text{ s}$).
+
+---
+
+### 🎯 Objective Function
+The objective is an energy-penalizing tracking controller (Quadratic Regulator style stage cost) designed to suppress the oscillator's limit-cycle dynamics and minimize actuator expenditure over the grid:
+
+$$\min_{u} \quad J = \sum_{i=1}^{N} \left( x_{1,i}^2 + x_{2,i}^2 + u_i^2 \right) \cdot \Delta t$$
+
+---
+
+### 🛑 Boundary Conditions & Constraints
+
+#### 1. Boundary Conditions
+* **Initial State:** The oscillator is initialized at a displaced state out of its natural equilibrium:
+  $$x_1(0) = 1, \quad x_2(0) = 1$$
+* **Terminal State (Pinpoint Equilibrium Rest):** The trajectory must strictly force both states to settle exactly at the origin origin by the final step $t_f$:
+  $$x_1(t_f) = 0, \quad x_2(t_f) = 0$$
+
+#### 2. Actuator Constraints (Box Constraints)
+* **Control Input Limits:** The force command is bounded asymmetrically, restricting maximum directional thrust capabilities:
+  $$-0.75 \leq u(t) \leq 1.0$$
+
 
 
 

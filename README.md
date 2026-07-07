@@ -216,5 +216,37 @@ $$\min_{u} \quad J = \frac{1}{2} \sum_{i=1}^{N} u_i^2 \cdot \Delta t$$
 #### 2. Path & Variable Constraints
 * **State / Control Constraints:** None (completely unconstrained workspace and infinite actuator capability).
 
+  ## Problem 7: Constrained Double Integrator Maximum-Position Trajectory (`Double_Integrator_Max_Pos.m`)
+
+### ⚙️ System Dynamics
+The system represents a constrained linear Double Integrator under direct acceleration control. The state vector is defined as $\mathbf{x} = [p, v]^T$, where $p$ is the position (m) and $v$ is the velocity (m/s). Controlled by the bounded acceleration input $u$ ($\text{m/s}^2$), the continuous-time state-space dynamics are governed by:
+
+$$\dot{p} = v$$
+$$\dot{v} = u$$
+
+The continuous system is discretized over a fixed terminal horizon $T_f = 1.0 \text{ s}$ divided into $N = 40$ intervals ($\Delta t = 0.025 \text{ s}$) using a 4th-order Runge-Kutta (RK4) integration scheme.
+
+---
+
+### 🎯 Objective Function
+The objective is to maximize the final horizontal position reached at the terminal time step $t_f$. In minimization form, this is expressed as the negative of the final position state:
+
+$$\min_{u} \quad J = -p(t_f)$$
+
+---
+
+### 🛑 Boundary Conditions & Constraints
+
+#### 1. Boundary Conditions
+* **Initial State:** The system starts completely at rest at the origin:
+  $$p(0) = 0, \quad v(0) = 0$$
+* **Terminal State (Zero Terminal Velocity):** The vehicle's position at $t_f$ is left free to maximize, but it must come to a complete stop with zero final velocity:
+  $$p(t_f) = \text{free}, \quad v(t_f) = 0$$
+
+#### 2. Actuator Constraints (Box Constraints)
+* **Acceleration Limits:** The control input is symmetrically bounded to represent physical actuator saturation limits, driving a classic bang-bang control profile:
+  $$-1.0 \leq u(t) \leq 1.0 \text{ m/s}^2$$
+
+
 
 

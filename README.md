@@ -186,4 +186,35 @@ $$\min_{u} \quad J = \sum_{i=1}^{N-1} \left( \|\mathbf{x}_i\|_2^2 + 2 u_i^2 \rig
 * **Thrust Limits:** The engine cannot provide negative thrust (no reverse thrusters) and is capped at a maximum thrust of 25 N:
   $$0 \leq u(t) \leq 25 \text{ N}$$
 
+  ## Problem 6: Double Integrator Minimum-Energy Trajectory (`Double_Integrator.m`)
+
+### ⚙️ System Dynamics
+The system represents a classic unconstrained linear Double Integrator (e.g., a frictionless point mass under direct acceleration control). The state vector is defined as $\mathbf{x} = [p, v]^T$, where $p$ is the position (m) and $v$ is the velocity (m/s). Controlled by the linear acceleration input $u$ ($\text{m/s}^2$), the continuous-time state-space dynamics are governed by:
+
+$$\dot{p} = v$$
+$$\dot{u} = u$$
+
+The continuous system is discretized over a fixed terminal landing horizon $T_f = 1.5 \text{ s}$ divided into $N = 20$ intervals ($\Delta t = 0.075 \text{ s}$) using a 4th-order Runge-Kutta (RK4) integration scheme.
+
+---
+
+### 🎯 Objective Function
+The objective is a quadratic stage cost representing the minimization of control energy (\(L_2\)-norm of acceleration) throughout the transition horizon:
+
+$$\min_{u} \quad J = \frac{1}{2} \sum_{i=1}^{N} u_i^2 \cdot \Delta t$$
+
+---
+
+### 🛑 Boundary Conditions & Constraints
+
+#### 1. Boundary Conditions
+* **Initial State:** The system starts away from the origin with an initial position offset and a positive velocity vector:
+  $$p(0) = 1, \quad v(0) = 1$$
+* **Terminal State (Pinpoint Origin Rest):** The vehicle must perfectly settle at zero position and zero velocity at the final time step $t_f$:
+  $$p(t_f) = 0, \quad v(t_f) = 0$$
+
+#### 2. Path & Variable Constraints
+* **State / Control Constraints:** None (completely unconstrained workspace and infinite actuator capability).
+
+
 

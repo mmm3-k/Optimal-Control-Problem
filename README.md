@@ -138,6 +138,50 @@ $$\min_{u} \quad J = \sum_{i=1}^{N} u_i^2 \cdot \Delta t$$
 * **Terminal State (Pinpoint Soft Landing):** The rocket must reach zero altitude with zero velocity at the exact final time step $t_f$:
   $$p(t_f) = 0, \quad v(t_f) = 0$$
 
+  ## Problem 5: Cart-Pole Stabilization (`Cart_Pole.m`)
+
+### ⚙️ System Dynamics
+The system represents a classic underactuated Cart-Pole system (inverted pendulum mounted on a motorized cart). The state vector is defined as $\mathbf{x} = [p, \theta, \dot{p}, \dot{\theta}]^T$, where:
+* $p$ is the horizontal position of the cart (m).
+* $\theta$ is the angular position of the pole (rad), where $\theta = 0$ is the vertical upright equilibrium position.
+* $\dot{p}$ is the linear velocity of the cart (m/s).
+* $\dot{\theta}$ is the angular velocity of the pole (rad/s).
+
+Controlled by a horizontal force input $u$ applied directly to the cart, the highly nonlinear continuous-time system dynamics are governed by:
+
+$$\dot{x}_1 = \dot{p}$$
+$$\dot{x}_2 = \dot{\theta}$$
+$$\dot{x}_3 = \frac{-m_2 g \sin(\theta)\cos(\theta) - \left(u + m_2 l \dot{\theta}^2 \sin(\theta)\right)}{m_2 \cos^2(\theta) - (m_1 + m_2)}$$
+$$\dot{x}_4 = \frac{(m_1 + m_2)g \sin(\theta) + \cos(\theta)\left(u + m_1 l \dot{\theta}^2 \sin(\theta)\right)}{m_2 l \cos^2(\theta) - (m_1 + m_2)l}$$
+
+Where:
+* $m_1 = 1.0 \text{ kg}$ is the mass of the cart.
+* $m_2 = 0.3 \text{ kg}$ is the mass of the pole.
+* $l = 0.5 \text{ m}$ is the length of the pole.
+* $g = 9.81 \text{ m/s}^2$ is the acceleration due to gravity.
+
+The system is discretized over a fixed time step $\Delta t = 0.1 \text{ s}$ across a horizon of $N = 50$ intervals using a 4th-order Runge-Kutta (RK4) integration scheme.
+
+---
+
+### 🎯 Objective Function
+The objective function balances regularizing the intermediate states, minimizing control effort (stage costs), and strictly penalizing deviations from the origin at the final horizon (terminal cost):
+
+$$\min_{u} \quad J = \sum_{i=1}^{N-1} \left( \|\mathbf{x}_i\|_2^2 + 2 u_i^2 \right) + 100 \|\mathbf{x}_N\|_2^2$$
+
+---
+
+### 🛑 Boundary Conditions & Constraints
+
+#### 1. Boundary Conditions
+* **Initial State:** The cart starts at the origin, but the pole begins with a slight angular offset from the vertical upright position:
+  $$p(0) = 0, \quad \theta(0) = 0.2, \quad \dot{p}(0) = 0, \quad \dot{\theta}(0) = 0$$
+* **Terminal State:** Unconstrained in the NLP definition, but heavily suppressed toward zero by the terminal weight factor ($100$).
+
+#### 2. Path & Variable Constraints
+* **State / Control Constraints:** None (unconstrained optimization problem).
+
+
 #### 2. Actuator Constraints (Box Constraints)
 * **Thrust Limits:** The engine cannot provide negative thrust (no reverse thrusters) and is capped at a maximum thrust of 25 N:
   $$0 \leq u(t) \leq 25 \text{ N}$$

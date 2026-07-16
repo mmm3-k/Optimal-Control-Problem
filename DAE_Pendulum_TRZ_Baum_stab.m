@@ -27,7 +27,7 @@ x1 = x_mat(1);
 x2 = x_mat(2);
 x3 = x_mat(3);
 x4 = x_mat(4);
-z = z_mat(1);
+y = z_mat(1);
 u = u_mat(1);
 
 %Dynamics
@@ -35,7 +35,7 @@ dynamics = [...
 		x3;...
 		x4;...
 		(1/m) * (-2*x1*y + (u*x2)/ L);...
-		(1/m) * (-m*g - 2-x2*y - (u*x1)/L)...
+		(1/m) * (-m*g - 2*x2*y - (u*x1)/L)...
 ];
 
 % Kinematic Constraints
@@ -77,7 +77,7 @@ ubg = [];
 
 g = [g; X(:,1) - x_start];
 lbg = [lbg;zeros(nx,1)];
-ubg = [ubg;zeros(nu,1)];
+ubg = [ubg;zeros(nx,1)];
 
 g = [g;X(1,end)];
 lbg = [lbg; 0];
@@ -132,7 +132,7 @@ L = L_running;
 nlp = struct('x',w,'f',L,'g',g);
 opts = struct;
 opts.ipopt.max_iter = 500;
-opts.ipot.tol = 1e-6;
+opts.ipopt.tol = 1e-6;
 solver = nlpsol('solver','ipopt',nlp,opts);
 sol = solver('x0',w0,'lbx',lbw,'ubx',ubw,'lbg',lbg,'ubg',ubg);
 
@@ -140,8 +140,8 @@ sol = solver('x0',w0,'lbx',lbw,'ubx',ubw,'lbg',lbg,'ubg',ubg);
 %Extract solutions
 w_opt = full(sol.x);
 X_opt = reshape(w_opt(1:nx*(N+1)),nx, N+1);
-Z_opt = reshape(w_opt(nx*(N+1)+1:nx*(N+1)), nz,N+1);
-U_opt = reshape(w_opt(nx*(N+1)+nz*(N+1)+1:end),nu, N+1);
+Z_opt = reshape(w_opt(nx*(N+1)+1:(nx+nz)*(N+1)),nz, N+1)
+U_opt = reshape(w_opt((nx+nz)*(N+1)+1:end),nu,N+1);
 t_grid = linspace(0,T,N+1);
 
 % post optimization verification
@@ -172,7 +172,7 @@ plot(t_grid,X_opt(1,:),'-o', 'LineWidth',1.5);
 plot(t_grid,X_opt(2,:),'--s','LineWidth',1.5);
 grid on;
 title('Pendululm Coordinates(Trapezoidal Method)');
-legend('x_1( Horizontal)','x_2 (Vertical)','Location','best');
+legend('x_1(Horizontal)','x_2(Vertical)','Location','best');
 
 subplot(4,1,2); hold on;
 plot(t_grid,Z_opt,'-dg', 'LineWidth',1.5);

@@ -35,7 +35,7 @@ for i = 1:N
 	x_kpl = X(:,i+1);
 	
 	u_k   = U(:,i);
-	u_kpl = X(:,i+1);
+	u_kpl = U(:,i+1);
 	
 	%Evaluate dynamics at node k and k+1
 	f_k   = dynamics(x_k,u_k);

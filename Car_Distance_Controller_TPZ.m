@@ -27,7 +27,7 @@ ubg = [];
 
 g = [g;X(:,1)-x0bar];
 lbg = [lbg; zeros(nx,1)];
-ubg = [ubg; zeros(nu,1)];
+ubg = [ubg; zeros(nx,1)];
 
 %Trapezoidal Collocation Constraints
 for i = 1:N
@@ -52,7 +52,7 @@ end
 % Cost Function Integration
 L_running = 0;
 for i = 1:N
-	L_running = L_running + (dt/2)*(0.1*U(:,i)^2 + 0.1*U(:,i)^2);
+	L_running = L_running + (dt/2)*(0.1*U(:,i)^2 + 0.1*U(:,i+1)^2);
 end
 
 %Terminal boundary state Penalty
@@ -67,7 +67,7 @@ sol = solver('x0',w0,'lbg',lbg,'ubg',ubg);
 %Post processing
 w_opt = full(sol.x);
 X_opt = reshape(w_opt(1:nx*(N+1)),nx, N+1);
-U_opt = reshape(w_opt(1:nx*(N+1)+1:end),nu,N+1);
+U_opt = reshape(w_opt(nx*(N+1)+1:end),nu,N+1);
 t_grid = linspace(0,T,N+1);
 
 %Plotting

@@ -97,8 +97,8 @@ for i =1:N
 	u_k = U(:,idx_k);
 	
 	x_mid = X(:,idx_mid);
-	z_mid = X(:,idx_mid);
-	u_mid = X(:,idx_mid);
+	z_mid = Z(:,idx_mid);
+	u_mid = U(:,idx_mid);
 	
 	x_kpl = X(:,idx_kpl);
 	z_kpl = Z(:,idx_kpl);
@@ -136,8 +136,9 @@ ubg = [ubg; 0];
 %Objective Function
 L_running = 0;
 for i = 1:N
-	idx_k = i;
-	idx_kpl = i+1;
+	idx_k = 2*i-1;
+	idx_mid = 2*i;
+	idx_kpl = 2*i+1;
 	L_running = L_running + (dt/6)*(U(:,idx_k)^2 + 4*U(:,idx_mid)^2 + U(:,idx_kpl)^2);
 end
 
@@ -154,9 +155,9 @@ sol = solver('x0',w0,'lbx',lbw,'ubx',ubw,'lbg',lbg,'ubg',ubg);
 
 %Extract solutions
 w_opt = full(sol.x);
-X_opt = reshape(w_opt(1:nx*(N+1)),nx, N+1);
-Z_opt = reshape(w_opt(nx*(N+1)+1:(nx+nz)*(N+1)),nz, N+1)
-U_opt = reshape(w_opt((nx+nz)*(N+1)+1:end),nu,N+1);
+X_opt = reshape(w_opt(1:nx*(2*N+1)),nx, 2*N+1);
+Z_opt = reshape(w_opt(nx*(2*N+1)+1:(nx+nz)*(2*N+1)),nz, 2*N+1)
+U_opt = reshape(w_opt((nx+nz)*(2*N+1)+1:end),nu,2*N+1);
 t_grid = linspace(0,T,2*N+1);
 
 % post optimization verification

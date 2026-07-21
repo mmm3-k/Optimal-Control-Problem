@@ -32,7 +32,7 @@ X = MX.sym('X',nx, N+1);
 X_mid = MX.sym('X_mid', nx,N);
 U = MX.sym('U',nu, N+1);
 
-V = [reshape(X,nx*(N+1),1); reshape(X_mid,nx*N,1);reshape(U,nx*(N+1)];
+V = [reshape(X,nx*(N+1),1); reshape(X_mid,nx*N,1);reshape(U,nx*(N+1),1)];
 
 g_col = [];
 L = 0;
@@ -41,7 +41,7 @@ cost = @(x,u) 10*x(1)^2  + 100*x(2)^2 + 0.1*x(3)^2 + 0.1*x(4)^2 + 0.01*u^2;
 
 for k = 1:N
 	xk = X(:,k);
-	xmid = X_mid(:,k+1);
+	xmid = X_mid(:,k);
 	xk1 = X(:,k+1);
 	
 	uk = U(:,k);
@@ -53,7 +53,7 @@ for k = 1:N
 	fmid = f_dyn(xmid,umid);
 	
 	g_col = [g_col; xmid - (0.5*(xk+xk1) + (DT/8)*(fk - fk1))];
-	g_col = [g_col; xk1 - (xk + (DT/6) * (fk + 4*fmid + fk1);)];
+	g_col = [g_col; xk1 - (xk + (DT/6) * (fk + 4*fmid + fk1))];
 	
 	%Simpson Integration
 	Lk = cost(xk,uk);
@@ -84,14 +84,14 @@ lbx(1:nx) = x0bar;
 ubx(1:nx) = x0bar;
 
 %NLP Solver
-nlp = struct('x',V, L, 'g',g_col);
+nlp = struct('x',V,'f', L, 'g',g_col);
 opts = struct;
 opts.ipopt.print_level = 5;
 solver = nlpsol('solver', 'ipopt',nlp,opts);
 
 %Initial guess
 v0 = zeros(size(V));
-sol = solver('x0',v0,'lbx', lbx, 'ubx', ubx, 'ubg', zeros(size(g_col)), 'ubg', zeros(size(g_col)));
+sol = solver('x0',v0,'lbx', lbx, 'ubx', ubx, 'lbg', zeros(size(g_col)), 'ubg', zeros(size(g_col)));
 V_opt = full(sol.x);
 
 %Processing the output
@@ -111,7 +111,8 @@ legend('Car Position(x)', 'Pole Angle(\theta)')
 xlabel('Time(s)')
 
 subplot(3,1,2); hold on;
-stairs(time_steps,X_opt(1,:),'r','LineWidth', 1.5);
+stairs(time_steps,X_opt(3,:),'r','LineWidth', 1.5);
+stairs(time_steps,X_opt(4,:),'-o','LineWidth', 1.5);
 grid on;
 title('Linear and angular velocity');
 xlabel('Time s');

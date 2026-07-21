@@ -32,7 +32,7 @@ X = MX.sym('X',nx, N+1);
 X_mid = MX.sym('X_mid', nx,N);
 U = MX.sym('U',nu, N+1);
 
-V = [reshape(X,nx*(N+1),1); reshape(X_mid,nx*N,1);reshape(U,nx*(N+1),1)];
+V = [reshape(X,nx*(N+1),1); reshape(X_mid,nx*N,1);reshape(U,nu*(N+1),1)];
 
 g_col = [];
 L = 0;

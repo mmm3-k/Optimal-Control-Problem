@@ -31,7 +31,7 @@ f_dyn = Function('f_dyn',{x_sym,u_sym}, {dynamics(x_sym,u_sym)});
 X = MX.sym('X',nx, N+1);
 U = MX.sym('U',nu, N+1);
 
-V = [reshape(X,nx*(N+1),1); reshape(U,nx*(N+1),1)];
+V = [reshape(X,nx*(N+1),1); reshape(U,nu*(N+1),1)];
 
 g_col = [];
 L = 0;
@@ -90,7 +90,7 @@ V_opt = full(sol.x);
 
 %Processing the output
 X_opt      = reshape(V_opt(1:n_X), nx, N+1);
-U_opt      = reshape(V_opt(n_X+ n_Xmid+1:end),nu, N+1);
+U_opt      = reshape(V_opt(n_X+1:end),nu, N+1);
 time_steps = 0:DT:N*DT;
 
 %Plotting

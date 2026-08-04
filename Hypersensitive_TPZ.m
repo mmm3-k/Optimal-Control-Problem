@@ -49,7 +49,7 @@ for k = 1:N
     Lk = cost(xk,uk);
     Lk1 = cost(xk1,uk1);
     
-    L = L + (DT/6) * (Lk + Lk1);
+    L = L + (DT/2) * (Lk + Lk1);
 end
 
 % Terminal Cost at the final node (Fixed: index fits nx = 1)
@@ -85,8 +85,7 @@ V_opt = full(sol.x);
 
 % Processing the output
 X_opt      = reshape(V_opt(1:n_X), nx, N+1);
-X_mid_opt  = reshape(V_opt(n_X+1:n_X+n_Xmid), nx, N);
-U_opt      = reshape(V_opt(n_X+n_Xmid+1:end), nu, N+1);
+U_opt      = reshape(V_opt(n_X+1:end), nu, N+1);
 time_steps = 0:DT:N*DT;
 
 % Plotting
